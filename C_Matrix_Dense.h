@@ -362,16 +362,8 @@ class C_Matrix_Dense{
         // 1. Assignment to Empty Object
         if ( (*this).row_size == -1 ) { 
             // Update Size
-            if (!obj2.transpose) {
-                // i. Input Object not Transposed
-                (*this).row_size = obj2.row_size;
-                (*this).col_size = obj2.col_size;
-            }
-            else {
-                // ii. Input Object Transposed
-                (*this).row_size = obj2.col_size;
-                (*this).col_size = obj2.row_size;
-            }
+            (*this).row_size = obj2.row_size;
+            (*this).col_size = obj2.col_size;
 
             (*this).NNZ = obj2.NNZ;
             (*this).values.resize(NNZ);
@@ -441,9 +433,7 @@ class C_Matrix_Dense{
         for (int ii = 0; ii < ii_M; ii++) {
             for (int jj = 0; jj < jj_M; jj++) {
                 sum=0;
-                for(int kk = 0; kk < kk_M; kk++) {
-                    sum += (*this)(ii,kk)*obj2(kk,jj);
-                }
+                for(int kk = 0; kk < kk_M; kk++) { sum += (*this)(ii,kk)*obj2(kk,jj); }
                 ij = ii*jj_M + jj;
                 obj_out.values[ij] = sum;
             }
@@ -503,9 +493,7 @@ class C_Matrix_Dense{
         }
 
         double in_prod = 0.0;
-        for (int ii = 0; ii < (*this).row_size; ii++) {
-            for (int jj = 0; jj < (*this).col_size; jj++) { in_prod += obj2(ii,jj) * (*this)(ii,jj); }
-        }
+        for (int ii = 0; ii < (*this).NNZ; ii++) { in_prod += obj2.values[ii] * (*this).values[ii];  }
 
         return in_prod;
     }
@@ -533,18 +521,18 @@ class C_Matrix_Dense{
         */
 
         // Check row access
-        if ( r_i > obj1.row_size ) { 
+        if ( r_i >= obj1.row_size ) { 
             std::string error_message = "Matrix access failed. Requested row index ";
-            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(obj1.row_size);
+            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(obj1.row_size-1);
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
         }
         
         // Check column access
-        if ( c_i > obj1.col_size ){
+        if ( c_i >= obj1.col_size ){
             std::string error_message = "Matrix access failed. Requested column index ";
-            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(obj1.col_size);
+            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(obj1.col_size-1);
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
@@ -567,9 +555,9 @@ class C_Matrix_Dense{
         */
 
         // Check row access
-        if ( r_i > obj1.row_size ) { 
+        if ( r_i >= obj1.row_size ) { 
             std::string error_message = "Matrix access failed. Requested row index ";
-            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(obj1.row_size);
+            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(obj1.row_size-1);
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
@@ -577,9 +565,9 @@ class C_Matrix_Dense{
 
         // Check column access
         for (int ii = 0; ii < c_i.size(); ii++) {
-            if ( c_i[ii] > obj1.col_size ){
+            if ( c_i[ii] >= obj1.col_size ){
                 std::string error_message = "Matrix access failed. Requested column index ";
-                error_message = error_message + std::to_string(c_i[ii]) + " > total column size " + std::to_string(obj1.col_size);
+                error_message = error_message + std::to_string(c_i[ii]) + " > total column size " + std::to_string(obj1.col_size-1);
                 error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
                 throw std::out_of_range(error_message); 
@@ -603,9 +591,9 @@ class C_Matrix_Dense{
 
         // Check row access
         for (int ii = 0; ii < r_i.size(); ii++) {
-            if ( r_i[ii] > obj1.row_size ) { 
+            if ( r_i[ii] >= obj1.row_size ) { 
                 std::string error_message = "Matrix access failed. Requested row index ";
-                error_message = error_message + std::to_string(r_i[ii]) + " > total row size " + std::to_string(obj1.row_size);
+                error_message = error_message + std::to_string(r_i[ii]) + " > total row size " + std::to_string(obj1.row_size-1);
                 error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
                 throw std::out_of_range(error_message); 
@@ -613,9 +601,9 @@ class C_Matrix_Dense{
         }
 
         // Check column access
-        if ( c_i > obj1.col_size ){
+        if ( c_i >= obj1.col_size ){
             std::string error_message = "Matrix access failed. Requested column index ";
-            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(obj1.col_size);
+            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(obj1.col_size-1);
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
@@ -639,9 +627,9 @@ class C_Matrix_Dense{
 
         // Check row access
         for (int ii = 0; ii < r_i.size(); ii++) {
-            if ( r_i[ii] > obj1.row_size ) { 
+            if ( r_i[ii] >= obj1.row_size ) { 
                 std::string error_message = "Matrix access failed. Requested row index ";
-                error_message = error_message + std::to_string(r_i[ii]) + " > total row size " + std::to_string(obj1.row_size);
+                error_message = error_message + std::to_string(r_i[ii]) + " > total row size " + std::to_string(obj1.row_size-1);
                 error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
                 throw std::out_of_range(error_message); 
@@ -650,9 +638,9 @@ class C_Matrix_Dense{
 
         // Check column access
         for (int ii = 0; ii < c_i.size(); ii++) {
-            if ( c_i[ii] > obj1.col_size ){
+            if ( c_i[ii] >= obj1.col_size ){
                 std::string error_message = "Matrix access failed. Requested column index ";
-                error_message = error_message + std::to_string(c_i[ii]) + " > total column size " + std::to_string(obj1.col_size);
+                error_message = error_message + std::to_string(c_i[ii]) + " > total column size " + std::to_string(obj1.col_size-1);
                 error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
                 throw std::out_of_range(error_message); 
