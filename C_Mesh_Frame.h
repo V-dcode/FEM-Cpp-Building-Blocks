@@ -29,39 +29,7 @@ class C_Mesh_Frame : public C_Mesh{
     
     public:
 
-
-    C_Mesh_Frame() { 
-        nodes    = { {0,0}, {1,1} };
-        elements = { {0,1} };
-
-        num_Nd = 2;
-        num_El = num_Nd - 1;
-        dim = 2;
-    }
-
     C_Mesh_Frame(int dim_in){ dim = dim_in; }
-
-    C_Mesh_Frame(double l, int num_Nd_in){
-        // 1D Default Initializer
-        num_Nd = num_Nd_in;
-        num_El = num_Nd-1;
-
-        dim = 1;
-
-        nodes.resize(num_Nd, std::vector<double>(3, 0));
-        elements.resize(num_Nd, std::vector<int>(2, 0));
-
-        // Format:
-        // x_start = { (x1, y1, z1), Node 1 Number }
-        // x_end   = { (x2, y2, z2), Node 2 Number }
-        std::vector<double> x_start = {0, 0, 0};
-        std::vector<double> x_end   = {l, 0, 0};
-
-        int kk_NODE = 0;
-        int kk_CONN = 0;
-
-        construct_elems(x_start, x_end, {0, 1}, num_El, kk_NODE, kk_CONN);
-    }
 
     //! I. ELEMENT CONSTRUCTION
     //!     Construct Individual 1D Element (Multiple sub-elements Between Principle Nodes)
@@ -183,6 +151,30 @@ class C_Mesh_Frame : public C_Mesh{
             construct_elems( {x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N, kk_NODE, kk_CONN );
         }
     }
+    //!     Construct 1D Frame (used for validation)
+    void construct_frame_1D(double l, int num_Nd_in){
+        // 1D Frame Initializer
+        num_Nd = num_Nd_in;
+        num_El = num_Nd-1;
+
+        dim = 1;
+
+        nodes.resize(num_Nd, std::vector<double>(3, 0));
+        elements.resize(num_El, std::vector<int>(2, 0));
+
+        nodes[1] = {l, 0, 0}; // Store second principal node
+
+        // Format:
+        // x_start = { (x1, y1, z1), Node 1 Number }
+        // x_end   = { (x2, y2, z2), Node 2 Number }
+        std::vector<double> x_start = {0, 0, 0};
+        std::vector<double> x_end   = {l, 0, 0};
+
+        int kk_NODE = 2;
+        int kk_CONN = 0;
+
+        construct_elems(x_start, x_end, {0, 1}, num_El, kk_NODE, kk_CONN);
+    }
 
     //! II. READ-INITIALIZE FROM FILE
     //!     Read Frame Data from File and Initialize Object
@@ -255,14 +247,14 @@ class C_Mesh_Frame : public C_Mesh{
             // Read from next line
             std::stringstream str_2(line);
         
-            // Read values ( Node, (x, y, z) )
+            // Read values ( Start, End, Num_Elements )
             str_2 >> temp_val_1;
             std::getline(str_2, word, ','); str_2 >> temp_val_2;
             std::getline(str_2, word, ','); str_2 >> temp_val_3;
             
             x_CONN[iter_read][0] = min(temp_val_1, temp_val_2); // Start Node Number
             x_CONN[iter_read][1] = max(temp_val_1, temp_val_2); // End   Node Number
-            x_CONN[iter_read][2] = temp_val_3; // Number of Elements
+            x_CONN[iter_read][2] = temp_val_3;                  // Number of Elements
 
             // Exit if requested number of lines has been read
             iter_read++;
