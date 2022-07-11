@@ -130,10 +130,20 @@ int main()
     C_Matrix_Sparse Z1(6,6);
     C_Matrix_Sparse Z2(6,6);
 
+    std::cout<< "\nBefore assignment: \n";
+    std::cout<<Z1;
+    std::cout<<Z2;
+
+
     std::vector<int> c = {1, 2, 3, 4};
     std::vector<int> d = {1, 2, 3, 4};
 
     std::cout << "\n Assignment to Sparse Matrix, 1: \n";
+    Z1.add_matr(A1, c, d);
+    std::cout << A1;
+    std::cout << Z1;
+
+    std::cout << "\n Assignment to Sparse Matrix, 1 again: \n";
     Z1.add_matr(A1, c, d);
     std::cout << A1;
     std::cout << Z1;
