@@ -87,6 +87,11 @@ int main()
     std::cout << D10;
     std::cout << D11;
 
+    std::cout << "\n Inner Product of matrices A1 and B1 \n";
+    std::cout << A1.inner_product(B1);
+    std::cout << "\n Norm of matrix A1 \n";
+    std::cout << A1.norm();
+
 
     // 3. Trivial Multiplications
     C_Matrix_Dense A(3,3), B(3,3);

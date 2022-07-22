@@ -43,7 +43,7 @@ class C_Material{
 };
 
 void calculateForceVector_AxialBar(int itEl, C_Mesh_1D& mesh, C_Material& mat, 
-    C_Matrix_Dense& KuGlobal, C_Matrix_Dense& uGlobal, C_LagrangeBasis& feL, C_GaussPoint_1D& GP_Data){
+    C_Matrix_Dense& K_norm, C_Matrix_Dense& KuGlobal, C_Matrix_Dense& uGlobal, C_LagrangeBasis& feL, C_GaussPoint_1D& GP_Data){
     
     std::vector<int>      elDoF = mesh.elements[itEl];
     std::vector<double> elNodes = {mesh.nodes[elDoF[0]], mesh.nodes[elDoF[1]]};
@@ -59,9 +59,11 @@ void calculateForceVector_AxialBar(int itEl, C_Mesh_1D& mesh, C_Material& mat,
         dsp_L = (2/le)*feL.dsp(itGp, intspace(0,ns_L));
         double JxW = 0.5*GP_Data.wt[itGp]*le;
         C_Matrix_Dense S11 = JxW*mat.EA*(dsp_L.T()*dsp_L);
+        K_norm(itEl,0) = S11.norm();
 
         // Add to Global Force Vector
-        KuGlobal(elDoF,0) = KuGlobal(elDoF,0) + S11*uGlobal(elDoF,0);
+        C_Matrix_Dense tmp=uGlobal(elDoF,0);
+        KuGlobal.add_matr(S11*tmp, elDoF, {0});
     }
 }
 
