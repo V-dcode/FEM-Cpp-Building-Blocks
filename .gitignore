@@ -1,5 +1,7 @@
 eigen-3.4.0/
 .vscode
+*.txt
+*.exe
 # Prerequisites
 *.d
 *.json

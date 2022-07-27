@@ -14,7 +14,7 @@ int main()
 {
     C_Material mat;
     C_GaussPoint_1D GP_Data(2);
-    C_Mesh_1D       mesh(10.0, 11);
+    C_Mesh_1D       mesh(10.0, 2);
     C_LagrangeBasis feL(1, GP_Data);
     int totDof=mesh.num_Nd;
     C_Matrix_Dense K_norm(mesh.num_El,1);
