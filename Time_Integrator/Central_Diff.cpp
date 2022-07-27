@@ -66,6 +66,7 @@ int main()
         double bcValue = 0.;
         uGlobal_new(bcDof,0) = bcValue;
         // Calculate new acceleration
+        KuGlobal.setZero();
         for (int itEl = 0; itEl < mesh.num_El; itEl++) {
             calculateForceVector_AxialBar(itEl, mesh, mat, K_norm, KuGlobal, uGlobal_new, feL, GP_Data);
         }

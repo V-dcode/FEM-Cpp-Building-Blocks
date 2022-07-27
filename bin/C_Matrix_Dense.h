@@ -47,6 +47,13 @@ class C_Matrix_Dense{
         values.resize(NNZ);
         for (int ii = 0; ii < NNZ; ii++) { values[ii] = 0.0; }
     }
+    void setZero()
+    {
+        for (int ii = 0; ii < NNZ; ii++) 
+        { 
+            values[ii] = 0.0; 
+        }
+    }
 
 
     // II. Operator Overloads
