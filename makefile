@@ -1,10 +1,16 @@
 eigenPath= $(CURDIR)/cd FEM
 femLib= bin/
+central_diff_truss:
+	g++ -std=c++17 -g -c centralDifference_Truss.cpp -I$(femLib)
+	g++ -std=c++17 -o main.exe centralDifference_Truss.o
+	./main.exe
+	python3 Time_intg_plotter_Truss.py
+
 central_diff:
 	g++ -std=c++17 -g -c centralDifferenceBar.cpp -I$(femLib)
 	g++ -std=c++17 -o main.exe centralDifferenceBar.o
-	./main.exe
-	python3 Time_intg_plotter.py
+	# ./main.exe
+	# python3 Time_intg_plotter.py
 	
 velo_verlet:
 	g++ -std=c++17 -g -c Velo_Verlet.cpp -I$(femLib)

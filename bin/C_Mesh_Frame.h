@@ -72,7 +72,8 @@ class C_Mesh_Frame : public C_Mesh{
         int jj = 0;
         if (num_El_sub == 1) {
             // 1. Single Element: No additional nodes (other than principal nodes) added
-            elements[kk_CONN] = {N1_num, N2_num};
+            // elements[kk_CONN] = {N1_num, N2_num};
+            elements.push_back({N1_num, N2_num});
             kk_CONN++;  
         }
         else {
@@ -122,11 +123,13 @@ class C_Mesh_Frame : public C_Mesh{
 
         // Store Principal Nodes
         kk_NODE = x_NODE.size();
+        // elements.resize(x_CONN.size(), std::vector<int>(3, 0));
         kk_CONN = 0;
         for (int ii = 0; ii < kk_NODE; ii++) {
-            nodes[ii][0] = x_NODE[ii][1]; 
-            nodes[ii][1] = x_NODE[ii][2]; 
-            nodes[ii][2] = x_NODE[ii][3]; 
+            // nodes[ii][0] = x_NODE[ii][0]; 
+            // nodes[ii][1] = x_NODE[ii][1]; 
+            // nodes[ii][2] = x_NODE[ii][2]; 
+            nodes.push_back(x_NODE[ii]);
         }
 
         // Store Interior Nodes and Connectivity
@@ -140,16 +143,19 @@ class C_Mesh_Frame : public C_Mesh{
             N = x_CONN[ii][2];
 
             // Start and End Coordinates
-            x1_S = x_NODE[jj_S][1];
-            x2_S = x_NODE[jj_S][2];
-            x3_S = x_NODE[jj_S][3];
+            x1_S = x_NODE[jj_S][0];
+            x2_S = x_NODE[jj_S][1];
+            x3_S = x_NODE[jj_S][2];
 
-            x1_E = x_NODE[jj_E][1];
-            x2_E = x_NODE[jj_E][2];
-            x3_E = x_NODE[jj_E][3];
+            x1_E = x_NODE[jj_E][0];
+            x2_E = x_NODE[jj_E][1];
+            x3_E = x_NODE[jj_E][2];
 
             construct_elems( {x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N, kk_NODE, kk_CONN );
         }
+        num_Nd=nodes.size();
+        num_NPE=2;
+        num_El=elements.size();
     }
     //!     Construct 1D Frame (used for validation)
     void construct_frame_1D(double l, int num_Nd_in){

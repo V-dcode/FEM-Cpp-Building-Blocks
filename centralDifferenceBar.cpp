@@ -28,7 +28,7 @@ int main()
     double bcValue = 0.;
     uGlobal(bcDof,0) = bcValue; 
     int fDof=totDof-1;
-    double m=1e-7;
+    double m=1e-3;
     double c=0.05;
     double dt=0.002;
     double kEner;
@@ -52,16 +52,16 @@ int main()
         for (int itEl = 0; itEl < mesh.num_El; itEl++) {
             calculateForceVector_AxialBar(itEl, mesh, mat, K_norm, KuGlobal, uGlobal, feL, GP_Data);
         }
-        uGlobal_new = (1/(m/(dt*dt)+c/(2*dt)))*(fGlobal + 2/(dt*dt)*m*uGlobal_prev - KuGlobal -1/(dt*dt)*m*uGlobal_prev + 1/(2*dt)*c*uGlobal_prev);
+        uGlobal_new = (1/(m/(dt*dt)+c/(2*dt)))*(fGlobal + 2/(dt*dt)*m*uGlobal - KuGlobal -1/(dt*dt)*m*uGlobal_prev + 1/(2*dt)*c*uGlobal_prev);
         double bcValue = 0.;
         uGlobal_new(bcDof,0) = bcValue;
-        uGlobal = uGlobal_new;
         // Calculate velocity
-        v = 1/(2*dt)*(uGlobal-uGlobal_prev);
-        uGlobal_prev=uGlobal;
+        v = 1/(2*dt)*(uGlobal_new-uGlobal_prev);
         kEner = 0.5*v.inner_product(v);
         file_handle<<t<<","<<kEner<<"\n";
         t = t + dt;
+        uGlobal_prev=uGlobal;
+        uGlobal = uGlobal_new;
     }
     file_handle.close();
     fHandleDisp.open("disp.txt");

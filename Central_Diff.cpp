@@ -60,7 +60,7 @@ int main()
 
     while (t<t_f)
     {
-        uGlobal_new = (1/(m/(dt*dt)+c/(2*dt)))*(fGlobal + 2/(dt*dt)*m*uGlobal_prev - KuGlobal -1/(dt*dt)*m*uGlobal_prev + 1/(2*dt)*c*uGlobal_prev);
+        uGlobal_new = (1/(m/(dt*dt)+c/(2*dt)))*(fGlobal + 2/(dt*dt)*m*uGlobal - KuGlobal -1/(dt*dt)*m*uGlobal_prev + 1/(2*dt)*c*uGlobal_prev);
         // ii. Dirichlet Boundary Conditions
         int bcDof=0;
         double bcValue = 0.;
@@ -71,13 +71,15 @@ int main()
             calculateForceVector_AxialBar(itEl, mesh, mat, K_norm, KuGlobal, uGlobal_new, feL, GP_Data);
         }
 
-        uGlobal = uGlobal_new;
         // Calculate velocity
         v = 1/(2*dt)*(uGlobal_new-uGlobal_prev);
         KE = 0.5*m*v.inner_product(v);
         file_handle<<t<<" ,"<<KE<<"\n";
         t = t + dt;
 
+        uGlobal_prev = uGlobal;
+        uGlobal = uGlobal_new;
+        
         v_norm = v.norm();
         if (v_norm<TOL)
         {
